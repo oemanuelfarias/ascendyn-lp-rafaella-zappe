@@ -76,20 +76,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Forms & intl-tel-input ---
-    function initPhoneInput() {
-        if (typeof intlTelInput === 'undefined') return;
+    // --- Form & Phone Mask ---
+    function initPhoneMask() {
         document.querySelectorAll('input[type="tel"]').forEach(input => {
-            input._iti = intlTelInput(input, {
-                onlyCountries: ['br'],
-                separateDialCode: true,
-                strictMode: true,
-                loadUtilsOnInit: 'https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/js/utils.js'
+            input.addEventListener('input', (e) => {
+                let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+                e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
             });
         });
     }
 
-    initPhoneInput();
+    initPhoneMask();
 
     const form = document.querySelector('form[data-form]');
     if (form) {
@@ -112,8 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     valid = false;
                 }
                 if (field.type === 'tel') {
-                    const iti = field._iti;
-                    if (iti && !iti.isValidNumber()) {
+                    if (field.value.length < 14) { // Pelo menos (11) 9999-9999
                         field.classList.add('error');
                         valid = false;
                     }
@@ -132,11 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Telefone internacional - pega instancia do input DESTE form
-            const phone = form.querySelector('input[type="tel"]');
-            if (phone && phone._iti) {
-                phone.value = phone._iti.getNumber();
-            }
+            // Envia o form com o formato atual (DDD) 99999-9999 (sem mexer com _iti)
 
             const originalText = btn.textContent;
             btn.disabled = true;
