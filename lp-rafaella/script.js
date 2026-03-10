@@ -143,7 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.textContent = 'Enviando...';
 
             try {
-                const res = await fetch('/', {
+                const actionUrl = form.getAttribute('action') || window.location.pathname;
+                const res = await fetch(actionUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams(new FormData(form)).toString()
