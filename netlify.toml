@@ -18,6 +18,12 @@
   status = 301
   force = true
 
+# Redirecionamento da raiz para a landing page (servindo os arquivos sob /lp-rafaella)
+[[redirects]]
+  from = "/*"
+  to = "/lp-rafaella/:splat"
+  status = 200
+
 # Headers de seguranca
 [[headers]]
   for = "/*"
