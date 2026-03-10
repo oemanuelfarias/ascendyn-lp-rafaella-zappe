@@ -76,4 +76,109 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Forms & intl-tel-input ---
+    function initPhoneInput() {
+        if (typeof intlTelInput === 'undefined') return;
+        document.querySelectorAll('input[type="tel"]').forEach(input => {
+            input._iti = intlTelInput(input, {
+                onlyCountries: ['br'],
+                separateDialCode: true,
+                strictMode: true,
+                loadUtilsOnInit: 'https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/js/utils.js'
+            });
+        });
+    }
+
+    initPhoneInput();
+
+    const form = document.querySelector('form[data-form]');
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = form.querySelector('[type="submit"]');
+            const feedback = form.querySelector('.form-feedback');
+            
+            // Validacao
+            let valid = true;
+            form.querySelectorAll('[required]').forEach(field => {
+                field.classList.remove('error');
+                if (!field.value.trim()) {
+                    field.classList.add('error');
+                    valid = false;
+                }
+                if (field.type === 'email' && field.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value)) {
+                    field.classList.add('error');
+                    valid = false;
+                }
+                if (field.type === 'tel') {
+                    const iti = field._iti;
+                    if (iti && !iti.isValidNumber()) {
+                        field.classList.add('error');
+                        valid = false;
+                    }
+                }
+            });
+
+            if (!valid) {
+                if(feedback) {
+                    feedback.style.color = 'var(--accent-color, #d32f2f)';
+                    feedback.style.marginBottom = '1rem';
+                    feedback.style.textAlign = 'center';
+                    feedback.style.fontSize = '0.9rem';
+                    feedback.textContent = 'Preencha todos os campos corretamente.';
+                    setTimeout(() => { feedback.textContent = ''; }, 5000);
+                }
+                return;
+            }
+
+            // Telefone internacional - pega instancia do input DESTE form
+            const phone = form.querySelector('input[type="tel"]');
+            if (phone && phone._iti) {
+                phone.value = phone._iti.getNumber();
+            }
+
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Enviando...';
+
+            try {
+                const res = await fetch('/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(new FormData(form)).toString()
+                });
+
+                if (res.ok) {
+                    // Meta Pixel / GTM Tracking
+                    if (typeof fbq === 'function') fbq('track', 'Lead');
+                    if (typeof dataLayer !== 'undefined') dataLayer.push({ event: 'generate_lead', form_name: form.getAttribute('name'), method: 'netlify_form' });
+
+                    // Oculta o form e mostra container de sucesso (que tem o botao do WhatsApp)
+                    form.style.display = 'none';
+                    const successContainer = document.querySelector('.form-success-container');
+                    if(successContainer) {
+                        successContainer.style.display = 'block';
+                        // Smooth scroll to container to ensure user sees it
+                        successContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } else {
+                    throw new Error('Erro na resposta do servidor');
+                }
+            } catch (err) {
+                if(feedback) {
+                    feedback.style.color = 'var(--accent-color, #d32f2f)';
+                    feedback.style.marginBottom = '1rem';
+                    feedback.style.textAlign = 'center';
+                    feedback.style.fontSize = '0.9rem';
+                    feedback.textContent = 'Erro ao enviar. Tente novamente.';
+                    setTimeout(() => { feedback.textContent = ''; }, 5000);
+                }
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        });
+    }
+
 });

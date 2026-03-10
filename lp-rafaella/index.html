@@ -18,6 +18,9 @@
 
     <!-- AOS Animation -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- intl-tel-input -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/css/intlTelInput.css">
 </head>
 
 <body>
@@ -222,7 +225,10 @@
                     <p>Preencha o formulário abaixo e entraremos em contato.</p>
                 </div>
 
-                <form name="contato" method="POST" data-netlify="true" class="main-form">
+                <form name="contato" method="POST" action="/" data-netlify="true" netlify-honeypot="bot-field" data-form class="main-form">
+                    <input type="hidden" name="form-name" value="contato">
+                    <p hidden><label>Não preencha: <input name="bot-field"></label></p>
+
                     <div class="form-group">
                         <label for="nome">Nome Completo</label>
                         <input type="text" id="nome" name="nome" placeholder="Seu nome" required>
@@ -230,7 +236,7 @@
 
                     <div class="form-group">
                         <label for="whatsapp">WhatsApp</label>
-                        <input type="tel" id="whatsapp" name="whatsapp" placeholder="(DDD) 99999-9999" required>
+                        <input type="tel" id="whatsapp" name="whatsapp" placeholder="(DDD) 99999-9999" oninput="this.value = this.value.replace(/[^0-9+\\-() ]/g, '')" required>
                     </div>
 
                     <div class="form-group">
@@ -239,8 +245,18 @@
                             required></textarea>
                     </div>
 
+                    <div class="form-feedback"></div>
                     <button type="submit" class="btn btn-primary btn-block">Solicitar Agendamento</button>
                 </form>
+
+                <div class="form-success-container" style="display: none; text-align: center; padding: 2rem 0;">
+                    <h3 style="margin-bottom: 1rem;">Quase lá!</h3>
+                    <p style="margin-bottom: 2rem;">Sua solicitação foi registrada. Clique no botão abaixo para concluir o agendamento pelo WhatsApp.</p>
+                    <a href="https://wa.me/5555999156225?text=Ol%C3%A1%21%20Gostaria%20de%20agendar%20uma%20consulta%20com%20a%20Dra%20Rafaella."
+                        target="_blank" class="btn btn-primary btn-block" style="display: inline-flex; justify-content: center; align-items: center; gap: 0.5rem;">
+                        <i class="ph-fill ph-whatsapp-logo" style="font-size: 1.5rem;"></i> Concluir no WhatsApp
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -348,9 +364,12 @@
     <!-- Scripts -->
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="script.js" defer></script>
+    
+    <!-- intl-tel-input JS -->
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/js/intlTelInput.min.js"></script>
+
+    <script src="script.js?v=3" defer></script>
     <script>
         AOS.init({
             disableMutationObserver: true,
