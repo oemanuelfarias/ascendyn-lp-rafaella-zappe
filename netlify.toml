@@ -11,18 +11,19 @@
 [images]
   remote_images = ["https://.*"]
 
-# Redirect www → apex
+# Redirect www -> apex
 [[redirects]]
   from = "https://www.example.com/*"
   to = "https://example.com/:splat"
   status = 301
   force = true
 
-# Redirecionamento da raiz para a landing page (servindo os arquivos sob /lp-rafaella)
+# Redirecionamento da raiz para a landing page
 [[redirects]]
-  from = "/*"
-  to = "/lp-rafaella/:splat"
-  status = 200
+  from = "/"
+  to = "/lp-rafaella/"
+  status = 301
+  force = true
 
 # Headers de seguranca
 [[headers]]
