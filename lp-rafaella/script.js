@@ -174,4 +174,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Tracking de Cliques no WhatsApp ---
+    document.querySelectorAll('a[href*="wa.me"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (typeof dataLayer !== 'undefined') {
+                dataLayer.push({ 
+                    event: 'whatsapp_click', 
+                    click_url: btn.href 
+                });
+            }
+        });
+    });
+
 });
