@@ -970,16 +970,16 @@ a {
     .scroll-content {
         position: relative;
         z-index: 1;
-        padding-top: 2rem;
+        padding-top: 1rem;
     }
 
     .diferencial-item {
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
         padding-bottom: 2rem;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        opacity: 1;
-        /* keep opacity 1 on mobile to avoid script issues */
-        transform: scale(1);
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
     }
 
     /* Footer Fix */
