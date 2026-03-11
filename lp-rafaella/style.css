@@ -945,7 +945,9 @@ a {
     }
 
     .sticky-content {
-        position: relative;
+        flex: none !important;
+        position: static !important;
+        top: auto !important;
         width: 100%;
         height: auto;
         display: flex;
@@ -972,7 +974,8 @@ a {
     }
 
     .scroll-content {
-        position: relative;
+        flex: none !important;
+        position: static !important;
         z-index: 1;
         padding-top: 0;
         margin-top: 0;
