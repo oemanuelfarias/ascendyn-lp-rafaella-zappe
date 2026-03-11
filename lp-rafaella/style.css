@@ -944,13 +944,15 @@ a {
     }
 
     .sticky-content {
-        position: relative;
+        position: sticky;
+        top: 60px;
+        /* offset from top to give breathing room */
         width: 100%;
         height: auto;
         display: flex;
         flex-direction: column;
-        z-index: 1;
-        background-color: transparent;
+        z-index: 10;
+        background-color: var(--white);
         padding-top: 1rem;
         padding-bottom: 1.5rem;
         margin-bottom: 0;
