@@ -175,15 +175,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Tracking de Cliques no WhatsApp ---
-    document.querySelectorAll('a[href*="wa.me"]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            if (typeof dataLayer !== 'undefined') {
-                dataLayer.push({ 
-                    event: 'whatsapp_click', 
-                    click_url: btn.href 
-                });
-            }
-        });
+    document.querySelectorAll('a').forEach(btn => {
+        const href = btn.getAttribute('href') || '';
+        const text = (btn.textContent || '').toLowerCase();
+        const ariaLabel = (btn.getAttribute('aria-label') || '').toLowerCase();
+        
+        if (href.includes('wa.me') || href.includes('api.whatsapp.com') || text.includes('whatsapp') || ariaLabel.includes('whatsapp')) {
+            btn.addEventListener('click', () => {
+                if (typeof dataLayer !== 'undefined') {
+                    dataLayer.push({ 
+                        event: 'whatsapp_click', 
+                        click_url: href 
+                    });
+                }
+            });
+        }
     });
 
 });
